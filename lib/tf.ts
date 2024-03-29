@@ -21,8 +21,7 @@ export const loadModel = async (url: string) => {
 export const predict = async (input: any, type: number) => {
   try {
     console.log(input)
-    // let tensor = tf.tensor(input);
-    let tensor = tf.tensor2d(input, [1, input.length]);
+    let tensor = tf.tensor2d(input, [1, input.length])
     console.log(tensor)
     // console.log(tensor.dataSync());
 
