@@ -21,7 +21,8 @@ export const loadModel = async (url: string) => {
 export const predict = async (input: any, type: number) => {
   try {
     console.log(input)
-    let tensor = tf.tensor(input);
+    // let tensor = tf.tensor(input);
+    let tensor = tf.tensor2d(input, [1, input.length]);
     console.log(tensor)
     // console.log(tensor.dataSync());
 
@@ -38,9 +39,10 @@ export const predict = async (input: any, type: number) => {
         pred = 0;
       }
     }
+    
     // @ts-ignore
     return { class: class_names[type][pred], pred };
   } catch (error: any) {
-    console.log(error.message);
+    console.log({ERROR: error.message});
   }
 };
