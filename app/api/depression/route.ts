@@ -6,7 +6,8 @@ export const POST = async(req: Request, res: Response) =>{
     const {options} = await req.json();
     const answers: number[] = options as number[];
     try {
-        await loadModel("http://localhost:3000/model/depression/model.json");
+        const url = process.env.URL as string
+        await loadModel(url);
         const result = await predict(options,0);
         console.log("res:", result);
         var sum =0
