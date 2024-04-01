@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
 import { loadModel, predict } from "@/lib/tf";
 import advice from "@/data/generated_text";
-import depression_data from "@/data/depression_data.json";
-import fs from "fs/promises";
 import path from "path";
-
-const dataFilePath = path.join(process.cwd(), 'data/depression_data.json');
+import { sql } from "@vercel/postgres";
 
 export const POST = async(req: Request, res: Response) =>{
     const {options, age, gender, maritalStatus, employmentStatus} = await req.json();
-    const data = JSON.stringify(depression_data);
-    const jsonData = JSON.parse(data);
     const answers: number[] = options as number[];
 
     try {
@@ -35,8 +30,8 @@ export const POST = async(req: Request, res: Response) =>{
             score: score,
             advice: adviceString1+ " " + adviceString2
         }
-        jsonData.push(response_json)
-        await fs.writeFile(dataFilePath, JSON.stringify(jsonData))
+        await sql`INSERT INTO depression (age, gender, maritalStatus,employmentStatus, status, score, advice) 
+        VALUES (${age}, ${gender}, ${maritalStatus}, ${employmentStatus}, ${result?.class}, ${score}, ${adviceString1+ " " + adviceString2})`
         return NextResponse.json(response_json, {status: 200})
     } catch (error) {
         console.log(error);
@@ -46,7 +41,8 @@ export const POST = async(req: Request, res: Response) =>{
 
 export const GET = async (req: Request, res: Response) =>{
     try{
-        return NextResponse.json(depression_data,
+        const {rows: data} = await sql`SELECT * FROM depression`;
+        return NextResponse.json(data,
         {status: 200}
         )
     }
