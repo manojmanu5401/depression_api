@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { loadModel, predict } from "@/lib/tf";
 import advice from "@/data/generated_text";
-import path from "path";
 import { sql } from "@vercel/postgres";
+import normalAdvice from "@/data/normal_text";
 
 export const POST = async(req: Request, res: Response) =>{
     const {options, age, gender, maritalStatus, employmentStatus} = await req.json();
@@ -18,9 +18,12 @@ export const POST = async(req: Request, res: Response) =>{
             sum+=n
         });
         const score = Math.floor((sum/30) * 100)
-        const adviceString1 = advice[Math.floor(Math.random() * 50)]?.split(".").slice(0, -1).join(".")
-        const adviceString2 = advice[Math.floor(Math.random() * 100) + 50]?.split(".").slice(0, -1).join(".")
-
+        var adviceString1 = advice[Math.floor(Math.random() * 50)]?.split(".").slice(0, -1).join(".")
+        var adviceString2 = advice[Math.floor(Math.random() * 100) + 50]?.split(".").slice(0, -1).join(".")
+        if(result?.pred == 0){
+            adviceString1 = normalAdvice[Math.floor(Math.random() * 9)]
+            adviceString1 = normalAdvice[Math.floor(Math.random() * 9)+1]
+        }
         const response_json = {
             age: age,
             gender: gender,
