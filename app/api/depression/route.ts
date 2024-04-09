@@ -31,10 +31,11 @@ export const POST = async(req: Request, res: Response) =>{
             employmentStatus: employmentStatus,
             status: result?.class,
             score: score,
-            advice: adviceString1+ " " + adviceString2
+            advice: adviceString1+ " " + adviceString2,
+            answers: answers
         }
-        await sql`INSERT INTO depression (age, gender, maritalStatus,employmentStatus, status, score, advice) 
-        VALUES (${age}, ${gender}, ${maritalStatus}, ${employmentStatus}, ${result?.class}, ${score}, ${adviceString1+ " " + adviceString2})`
+        await sql`INSERT INTO depression (age, gender, maritalStatus,employmentStatus, status, score, advice, answers) 
+        VALUES (${age}, ${gender}, ${maritalStatus}, ${employmentStatus}, ${result?.class}, ${score}, ${adviceString1+ " " + adviceString2}, ${answers.join(',')})`
         return NextResponse.json(response_json, {status: 200})
     } catch (error) {
         console.log(error);
